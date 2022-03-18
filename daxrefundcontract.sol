@@ -53,6 +53,7 @@ contract Ownable is Context {
     contract DaxRefund is Ownable {
         mapping(address => bool) public isRefunded;
         uint256 public refundAmount;
+        uint256 public refundPool;
         address oldStake = 0xdbF843cb81E326900800703f96BeA23Dac4dd8aE;
         
     function RefundDax() public {
@@ -63,6 +64,7 @@ contract Ownable is Context {
             bonus = amount / 10;
             refundAmount = amount + bonus;
             payable(msg.sender).transfer(refundAmount);
+            refundPool -= refundAmount;
             isRefunded[msg.sender] = true;
         }
 
@@ -81,6 +83,10 @@ contract Ownable is Context {
     function takeExcessDAX(uint256 amount, address wallet) public onlyOwner{
         payable(wallet).transfer(amount);
     }
-
+    function depositDAX() public payable{
+        uint256 depositAmount;
+        depositAmount = msg.value;
+        refundPool += depositAmount;
+    }
       
     }
